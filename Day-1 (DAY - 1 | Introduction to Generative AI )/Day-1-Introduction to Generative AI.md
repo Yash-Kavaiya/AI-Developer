@@ -9,6 +9,12 @@
 - Open Source LLM model
 - End to End Project
 
+
+**Prerequisites**
+ * Basic knowledge of Python is required
+ * Basic knowledge of ML and DL is preferred
+ * No need to know classical ML or DL models
+
 ## What is Generative AI?
 Generative AI generate new data based on training sample.Generative model can generate Image,Text, Audio, Videos etc. data as output.
 
