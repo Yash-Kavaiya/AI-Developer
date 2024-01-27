@@ -21,7 +21,7 @@
 
 ### Using AutoML for tabular data
 
-    ●  Creating forecasting models using AutoML
+### Creating forecasting models using AutoML
 
-    ●  Configuring and debugging trained models
+### Configuring and debugging trained models
 
