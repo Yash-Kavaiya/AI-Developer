@@ -3,6 +3,10 @@
 ## 1.1 Developing ML models by using BigQuery ML. Considerations include:
 ###  Building the appropriate BigQuery ML model (e.g., linear and binary classification, regression, time-series, matrix factorization, boosted trees, autoencoders) based on the business problem
 
+|Qwik-Labs|Link|
+|---|---|
+|Create ML Models with BigQuery ML|https://www.cloudskillsboost.google/course_templates/626|
+
 ### Feature engineering or selection by using BigQuery ML
 
 ### Generating predictions by using BigQuery ML
