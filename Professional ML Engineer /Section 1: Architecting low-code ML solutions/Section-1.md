@@ -14,7 +14,8 @@
 ## 1.2 Building AI solutions by using ML APIs. Considerations include:
 
 ### Building applications by using ML APIs (e.g., Cloud Vision API, Natural Language API, Cloud Speech API, Translation)
-
+- https://cloud.google.com/vision
+- 
 ### Building applications by using industry-specific APIs (e.g., Document AI API, Retail API)
 
 ## 1.3 Training models by using AutoML. Considerations include:
