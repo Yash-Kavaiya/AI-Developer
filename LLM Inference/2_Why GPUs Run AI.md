@@ -537,15 +537,8 @@ Some points in the video (narration or visuals) are slightly off or simplified. 
 | L1/SRAM | Small | Very fast | **Programmer** |
 | Registers | Tiny | Fastest | Compiler |
 
-### 12.3 Core formulas
+<img width="1055" height="1491" alt="image" src="https://github.com/user-attachments/assets/8e98c91c-0b65-4dee-8b44-406c07a43a80" />
 
-```
-Ridge point (FLOP/B)     = Peak FLOPs / Memory bandwidth
-Model size (bytes)       = Parameters x Bytes per parameter
-Time per token (decode)  ~= Model size / Memory bandwidth
-Max tokens/sec (batch 1) ~= Memory bandwidth / Model size
-Arithmetic intensity     = FLOPs performed / Bytes moved
-```
 
 ### 12.4 Final recap
 
