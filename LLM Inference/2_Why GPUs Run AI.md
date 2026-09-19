@@ -38,20 +38,8 @@ C[i][j] = A[i][0]*B[0][j] + A[i][1]*B[1][j] + ... + A[i][k]*B[k][j]
 
 No output element depends on any other, so all of them can be computed simultaneously.
 
-```mermaid
-flowchart LR
-    subgraph CPU["CPU: few strong cores"]
-        direction TB
-        c0["Core 0: dot product 1"] --> c1["Core 1: dot product 2"] --> c2["... sequential batches ..."]
-    end
-    subgraph GPU["GPU: thousands of simple cores"]
-        direction TB
-        g0["dot 1"]
-        g1["dot 2"]
-        g2["dot 3"]
-        g3["dot N"]
-    end
-```
+<img width="1448" height="1086" alt="image" src="https://github.com/user-attachments/assets/adad3867-4ab5-43ff-9aa8-fc4fbd5cabbb" />
+
 
 ### 2.3 Time comparison (illustrated by the video's simulation)
 
@@ -63,8 +51,6 @@ GPU (10,000+):   |##|                              far fewer clock ticks
 
 > The simulation targets **10,000 neural node operations**. The CPU chews through them in batches limited by its ~16 cores. The GPU processes them in massively parallel waves.
 
----
-
 ## 3. GPU Memory Hierarchy
 
 > **The most important idea in the series:** *Moving data is expensive.* You must master the GPU memory hierarchy to understand LLM optimization.
@@ -73,32 +59,7 @@ GPUs don't have one big block of memory. They use a **multi-tiered hierarchy wit
 
 ### 3.1 The "concentric rings" model
 
-```mermaid
-flowchart TB
-    HBM["HBM: High Bandwidth Memory<br/>40 to 141 GB, ~2 to 3.35 TB/s<br/>The Warehouse"]
-    L2["L2 Cache<br/>50 to 100 MB, ~12 to 14 TB/s<br/>Hardware-managed"]
-    L1["L1 Cache / Shared Memory (SRAM)<br/>~256 KB per SM, ~33+ TB/s<br/>Programmer-managed"]
-    CORES["Compute Cores: Tensor and vector engines<br/>0 KB storage, pure math"]
-    HBM ==>|"slowest hop, the bottleneck"| L2
-    L2 ==> L1
-    L1 ==> CORES
-```
-
-```
-+--------------------------------------------------------------+
-|  HBM (warehouse)  40-141 GB   ~2-3.35 TB/s                   |
-|  +--------------------------------------------------------+  |
-|  |  L2 cache  50-100 MB   ~12-14 TB/s   (auto-managed)    |  |
-|  |  +--------------------------------------------------+  |  |
-|  |  |  L1 / SRAM  ~256 KB per SM   ~33+ TB/s           |  |  |
-|  |  |  +--------------------------------------------+  |  |  |
-|  |  |  |           MATH CORES (0 KB storage)        |  |  |  |
-|  |  |  +--------------------------------------------+  |  |  |
-|  |  +--------------------------------------------------+  |  |
-|  +--------------------------------------------------------+  |
-+--------------------------------------------------------------+
-   Moving inward: FASTER but SMALLER.   Moving outward: BIGGER but SLOWER.
-```
+<img width="1122" height="1402" alt="image" src="https://github.com/user-attachments/assets/6e2dc956-c97f-497b-a042-c29faa4166e1" />
 
 ### 3.2 Layer-by-layer summary
 
@@ -146,24 +107,8 @@ flowchart LR
 
 ### 4.1 Zoom levels
 
-```mermaid
-flowchart TD
-    A["Full GPU package<br/>Main silicon die + HBM stacks"] --> B["SM grid array<br/>full GH100 die has 144 SMs"]
-    B --> C["One Streaming Multiprocessor (SM)"]
-    C --> D["Execution sub-cores:<br/>CUDA cores, Tensor cores, Register files"]
-```
+<img width="1312" height="1199" alt="image" src="https://github.com/user-attachments/assets/9c9ac5c2-f3bc-4263-9453-076b54bafb5a" />
 
-```
-+---------------------------------------------------------------+
-| GPU package                                                   |
-|  [HBM] [HBM] [HBM]  +-----------------------+ [HBM] [HBM]... |
-|                     |   MAIN SILICON DIE    |                 |
-|                     |  [SM][SM][SM]...[SM]  |                 |
-|                     |  [SM][SM][SM]...[SM]  |                 |
-|                     |  (144 SMs on full die)|                 |
-|                     +-----------------------+                 |
-+---------------------------------------------------------------+
-```
 
 ### 4.2 What's inside a Streaming Multiprocessor (SM)
 
@@ -308,32 +253,7 @@ Ridge point = Peak compute / Memory bandwidth
 
 ### 7.3 Roofline diagram
 
-```
-Attainable
-performance
-(TFLOP/s)
-   ^                          Compute ceiling (989 TFLOP/s)
-989|                  ______________________________
-   |                /
-   |              /  <-- memory-bandwidth slope
-   |            /        (perf = intensity x 3.35 TB/s)
-   |          /
-   |        /
-   |      /                 ridge point ~ 295 FLOP/B
-   |    /                   |
-   |  / o Decode (~1-2)     |    o Prefill (~350)
-   +--------------------------+------------------------> Arithmetic intensity
-                                                          (FLOP / Byte)
-```
 
-```mermaid
-flowchart LR
-    Q{"Arithmetic intensity vs ridge point 295 FLOP/B"}
-    Q -->|"below 295"| M["Memory-bound<br/>Decode<br/>Optimize data movement"]
-    Q -->|"above 295"| C["Compute-bound<br/>Prefill<br/>Optimize math throughput"]
-```
-
----
 
 ## 8. LLM Inference: Prefill vs Decode
 
@@ -470,18 +390,7 @@ flowchart TD
 - **Every GPU holds a slice of every layer** and computes its fragment **at the same time**.
 - After each layer's computation, GPUs must **synchronize via an all-reduce** to combine results.
 
-```mermaid
-flowchart TB
-    IN["Layer input"] --> S0["GPU 0<br/>slice 0 of the weights"]
-    IN --> S1["GPU 1<br/>slice 1"]
-    IN --> S2["GPU 2<br/>slice 2"]
-    IN --> S3["GPU 3<br/>slice 3"]
-    S0 --> AR{{"ALL-REDUCE<br/>over NVLink"}}
-    S1 --> AR
-    S2 --> AR
-    S3 --> AR
-    AR --> OUT["Layer output, then next layer"]
-```
+<img width="1448" height="1086" alt="image" src="https://github.com/user-attachments/assets/40aa1c05-e228-48bb-b44e-15a20c9aa3a1" />
 
 | Pros | Cons |
 |---|---|
@@ -585,8 +494,6 @@ flowchart TD
     WALL --- T["Tensor parallelism<br/>aggregate bandwidth"]
 ```
 
----
-
 ## 11. Corrections and Clarifications
 
 Some points in the video (narration or visuals) are slightly off or simplified. Useful to know when studying:
@@ -600,8 +507,6 @@ Some points in the video (narration or visuals) are slightly off or simplified. 
 | **Decode arithmetic intensity** | ~2 FLOP/B | For FP16 (2 bytes/param, ~2 FLOPs/param) it is closer to **~1 FLOP/B**. Either way it is far below the ~295 ridge point, so the conclusion is unchanged. |
 | **14 tokens/s figure** | Max decode speed for a 70B FP16 model | Fine as a theoretical single-GPU bound, but a 70B FP16 model (140 GB) **does not fit on one 80 GB A100**. In practice you need multiple GPUs or quantization. |
 | **Peak TFLOPs figures** | 989 TFLOPs (H100) | This is **dense FP16/BF16** tensor throughput (sparse figures are 2x). The "B100 1,800+" figure is quoted from the video. |
-
----
 
 ## 12. Cheat Sheet and Recap
 
