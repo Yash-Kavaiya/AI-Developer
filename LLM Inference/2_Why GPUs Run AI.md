@@ -3,25 +3,6 @@
 > **Video theme:** Why do we use GPUs for AI instead of faster CPUs?
 > **One-line answer:** Neural networks are dominated by matrix multiplications, which are *embarrassingly parallel*. GPUs are built for exactly that. But for LLM inference the real limit is usually **memory bandwidth**, not raw compute.
 
----
-
-## Table of Contents
-
-1. [Big Picture](#1-big-picture)
-2. [CPU vs GPU](#2-cpu-vs-gpu)
-3. [GPU Memory Hierarchy](#3-gpu-memory-hierarchy)
-4. [GPU Anatomy: Die, SMs, and Cores](#4-gpu-anatomy-die-sms-and-cores)
-5. [Warps, SIMD, and Warp Divergence](#5-warps-simd-and-warp-divergence)
-6. [Tensor Cores](#6-tensor-cores)
-7. [Compute-Bound vs Memory-Bound (Roofline Model)](#7-compute-bound-vs-memory-bound-roofline-model)
-8. [LLM Inference: Prefill vs Decode](#8-llm-inference-prefill-vs-decode)
-9. [Scaling Beyond One GPU](#9-scaling-beyond-one-gpu)
-10. [Optimization Techniques That Fight the Memory Wall](#10-optimization-techniques-that-fight-the-memory-wall)
-11. [Corrections and Clarifications](#11-corrections-and-clarifications)
-12. [Cheat Sheet and Recap](#12-cheat-sheet-and-recap)
-
----
-
 ## 1. Big Picture
 
 ```mermaid
