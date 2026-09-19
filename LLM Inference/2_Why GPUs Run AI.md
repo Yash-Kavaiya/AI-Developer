@@ -5,25 +5,14 @@
 
 ## 1. Big Picture
 
-```mermaid
-flowchart TD
-    A["Neural networks = mostly matrix multiplications"] --> B["Matrix multiplications are embarrassingly parallel"]
-    B --> C["Split into thousands of independent dot products"]
-    C --> D["GPU: thousands of simple cores run them at once"]
-    D --> E["Compute is now very fast"]
-    E --> F{"Can data reach the cores fast enough?"}
-    F -->|"Prefill: yes, large batches"| G["Compute-bound: tensor cores busy"]
-    F -->|"Decode: no, tiny batch"| H["Memory-bandwidth-bound: cores wait for weights"]
-    H --> I["Optimizations: quantization, batching, KV cache, speculative decoding, FlashAttention"]
-```
+<img width="1122" height="1402" alt="image" src="https://github.com/user-attachments/assets/ec3d721e-8975-488d-9de5-38bb77da8316" />
+
 
 **Key takeaways**
 
 - GPUs win at AI because of **massive parallelism**.
 - The bottleneck in LLM decoding is **moving data**, not doing math.
 - Every inference optimization in the series is ultimately **fighting the memory bandwidth wall**.
-
----
 
 ## 2. CPU vs GPU
 
